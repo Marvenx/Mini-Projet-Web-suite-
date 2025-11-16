@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interactif</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="home-page" class="page active">
+        <div class="container">
+            <header>
+                <h1>🧠 Quiz Interactif</h1>
+                <p class="subtitle">Testez vos connaissances avec notre quiz ludique</p>
+            </header>
+            
+            <main class="home-content">
+                <div class="quiz-info">
+                    <div class="info-card">
+                        <h3>📚 À propos du quiz</h3>
+                        <p>Ce quiz contient 10 questions variées sur différents sujets. Vous avez 30 secondes par question pour répondre.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>🎯 Règles</h3>
+                        <ul>
+                            <li>10 questions au total</li>
+                            <li>30 secondes par question</li>
+                            <li>Score basé sur la rapidité et l'exactitude</li>
+                            <li>Feedback immédiat après chaque réponse</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="home-actions">
+                    <button id="start-quiz" class="btn btn-primary" aria-label="Commencer le quiz">
+                        Commencer le Quiz
+                    </button>
+                    <button id="view-history" class="btn btn-secondary">
+                        Voir l'Historique
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="history-page" class="page">
+        <div class="container">
+            <header>
+                <h1>📊 Historique des Scores</h1>
+            </header>
+            <main class="history-content">
+                <div id="home-history-list" class="history-list">
+                </div>
+                <div class="history-actions">
+                    <button id="back-from-history" class="btn btn-primary">
+                        Retour à l'accueil
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="quiz-page" class="page">
+        <div class="container">
+            <header class="quiz-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress" class="progress-fill"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span id="question-counter">Question 1/10</span>
+                        <span id="progress-indicator" class="progress-indicator">Répondu: 0/10</span>
+                    </div>
+                </div>
+                
+                <div class="timer-container">
+                    <div id="timer" class="timer">30</div>
+                    <span class="timer-label">secondes</span>
+                </div>
+            </header>
+
+            <main class="quiz-content">
+                <div class="question-container">
+                    <h2 id="question-text">Chargement de la question...</h2>
+                </div>
+                
+                <div class="answers-container" id="answers-container">
+                </div>
+                
+                <div class="quiz-controls">
+                    <button id="abort-quiz" class="btn btn-danger">
+                        Quitter le Quiz
+                    </button>
+                    <button id="next-question" class="btn btn-secondary" disabled>
+                        Question suivante
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="results-page" class="page">
+        <div class="container">
+            <header>
+                <h1>🎉 Résultats du Quiz</h1>
+            </header>
+            
+            <main class="results-content">
+                <div class="score-container">
+                    <div class="score-circle">
+                        <div class="score-number" id="final-score">0</div>
+                        <div class="score-label">sur 10</div>
+                    </div>
+                    
+                    <div class="score-details">
+                        <h3 id="score-message">Excellent travail !</h3>
+                        <p id="score-description">Vous avez obtenu un excellent score !</p>
+                    </div>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number" id="correct-answers">0</span>
+                        <span class="stat-label">Bonnes réponses</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="wrong-answers">0</span>
+                        <span class="stat-label">Mauvaises réponses</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="time-taken">0s</span>
+                        <span class="stat-label">Temps total</span>
+                    </div>
+                </div>
+                
+                <div id="question-review" class="question-review-container">
+                    <h3>📋 Révision des Questions</h3>
+                    <div id="review-list" class="review-list">
+                    </div>
+                </div>
+                
+                <div id="score-history" class="score-history-container">
+                    <h3>📊 Historique des Scores</h3>
+                    <div id="history-list" class="history-list">
+                    </div>
+                </div>
+                
+                <div class="results-actions">
+                    <button id="restart-quiz" class="btn btn-primary">
+                        Recommencer
+                    </button>
+                    <button id="back-home" class="btn btn-secondary">
+                        Retour à l'accueil
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback hidden">
+        <div class="feedback-content">
+            <div class="feedback-icon"></div>
+            <div class="feedback-message"></div>
+        </div>
+    </div>
+
+    <div id="abort-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>⚠️ Quitter le Quiz ?</h3>
+            <p>Êtes-vous sûr de vouloir quitter le quiz ? Votre progression sera perdue.</p>
+            <div class="modal-actions">
+                <button id="confirm-abort" class="btn btn-danger">Oui, quitter</button>
+                <button id="cancel-abort" class="btn btn-secondary">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
