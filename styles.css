@@ -968,3 +968,207 @@ header h1 {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* =====================================================
+   Styles pour les fonctionnalités PHP
+   ===================================================== */
+
+/* Input pseudo */
+.pseudo-input {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.9);
+    transition: var(--transition);
+}
+
+.pseudo-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.pseudo-input.error {
+    border-color: var(--error-color);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.loading-overlay.hidden {
+    display: none;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+/* Player rank announcement */
+.player-rank-container {
+    margin: 1.5rem 0;
+}
+
+.rank-announcement {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #333;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Leaderboard styles */
+.leaderboard-container,
+.global-leaderboard-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.leaderboard-container h3,
+.global-leaderboard-section h3 {
+    color: white;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: var(--transition);
+}
+
+.leaderboard-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-item.current-player {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border: 2px solid var(--success-color);
+}
+
+.leaderboard-rank {
+    font-size: 1.5rem;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+}
+
+.leaderboard-info {
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.leaderboard-pseudo {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.leaderboard-date {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.leaderboard-stats {
+    text-align: right;
+}
+
+.leaderboard-score {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+.leaderboard-time {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.no-scores {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2rem;
+    font-style: italic;
+}
+
+/* Responsive pour les nouveaux éléments */
+@media (max-width: 600px) {
+    .leaderboard-item {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .leaderboard-rank {
+        min-width: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .leaderboard-info {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .leaderboard-stats {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        margin-left: 50px;
+    }
+    
+    .rank-announcement {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+}

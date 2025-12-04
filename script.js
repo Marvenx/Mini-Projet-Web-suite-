@@ -1,69 +1,76 @@
+// =====================================================
+// Configuration du Quiz
+// =====================================================
 const QUIZ_CONFIG = {
     totalQuestions: 10,
     timePerQuestion: 30,
-    questions: [
-        {
-            question: "Quelle est la capitale de la France ?",
-            answers: ["Paris", "Lyon", "Marseille", "Toulouse"],
-            correct: 0,
-            explanation: "Paris est la capitale et la plus grande ville de la France."
-        },
-        {
-            question: "Quel est le plus grand océan du monde ?",
-            answers: ["Atlantique", "Pacifique", "Indien", "Arctique"],
-            correct: 1,
-            explanation: "L'océan Pacifique est le plus grand océan du monde."
-        },
-        {
-            question: "Combien de côtés a un hexagone ?",
-            answers: ["5", "6", "7", "8"],
-            correct: 1,
-            explanation: "Un hexagone a 6 côtés."
-        },
-        {
-            question: "Qui a peint la Joconde ?",
-            answers: ["Michel-Ange", "Raphaël", "Léonard de Vinci", "Donatello"],
-            correct: 2,
-            explanation: "La Joconde a été peinte par Léonard de Vinci."
-        },
-        {
-            question: "Quel est le symbole chimique de l'or ?",
-            answers: ["Ag", "Au", "Fe", "Cu"],
-            correct: 1,
-            explanation: "Le symbole chimique de l'or est Au (du latin 'aurum')."
-        },
-        {
-            question: "Dans quel pays se trouve la Tour Eiffel ?",
-            answers: ["Italie", "Espagne", "France", "Allemagne"],
-            correct: 2,
-            explanation: "La Tour Eiffel se trouve à Paris, en France."
-        },
-        {
-            question: "Quel est le plus grand mammifère du monde ?",
-            answers: ["Éléphant", "Girafe", "Baleine bleue", "Rhinocéros"],
-            correct: 2,
-            explanation: "La baleine bleue est le plus grand mammifère du monde."
-        },
-        {
-            question: "Combien de jours y a-t-il dans une année bissextile ?",
-            answers: ["365", "366", "364", "367"],
-            correct: 1,
-            explanation: "Une année bissextile a 366 jours (29 jours en février)."
-        },
-        {
-            question: "Quel est le plus petit pays du monde ?",
-            answers: ["Monaco", "Vatican", "Liechtenstein", "Saint-Marin"],
-            correct: 1,
-            explanation: "Le Vatican est le plus petit pays du monde."
-        },
-        {
-            question: "Qui a écrit 'Les Misérables' ?",
-            answers: ["Alexandre Dumas", "Victor Hugo", "Émile Zola", "Gustave Flaubert"],
-            correct: 1,
-            explanation: "Victor Hugo a écrit 'Les Misérables'."
-        }
-    ]
+    apiUrl: 'api/', // Chemin vers l'API PHP
+    questions: [] // Sera chargé depuis la base de données
 };
+
+// Questions de secours en cas d'échec de l'API
+const LOCAL_QUESTIONS = [
+    {
+        question: "Quelle est la capitale de la France ?",
+        answers: ["Paris", "Lyon", "Marseille", "Toulouse"],
+        correct: 0,
+        explanation: "Paris est la capitale et la plus grande ville de la France."
+    },
+    {
+        question: "Quel est le plus grand océan du monde ?",
+        answers: ["Atlantique", "Pacifique", "Indien", "Arctique"],
+        correct: 1,
+        explanation: "L'océan Pacifique est le plus grand océan du monde."
+    },
+    {
+        question: "Combien de côtés a un hexagone ?",
+        answers: ["5", "6", "7", "8"],
+        correct: 1,
+        explanation: "Un hexagone a 6 côtés."
+    },
+    {
+        question: "Qui a peint la Joconde ?",
+        answers: ["Michel-Ange", "Raphaël", "Léonard de Vinci", "Donatello"],
+        correct: 2,
+        explanation: "La Joconde a été peinte par Léonard de Vinci."
+    },
+    {
+        question: "Quel est le symbole chimique de l'or ?",
+        answers: ["Ag", "Au", "Fe", "Cu"],
+        correct: 1,
+        explanation: "Le symbole chimique de l'or est Au (du latin 'aurum')."
+    },
+    {
+        question: "Dans quel pays se trouve la Tour Eiffel ?",
+        answers: ["Italie", "Espagne", "France", "Allemagne"],
+        correct: 2,
+        explanation: "La Tour Eiffel se trouve à Paris, en France."
+    },
+    {
+        question: "Quel est le plus grand mammifère du monde ?",
+        answers: ["Éléphant", "Girafe", "Baleine bleue", "Rhinocéros"],
+        correct: 2,
+        explanation: "La baleine bleue est le plus grand mammifère du monde."
+    },
+    {
+        question: "Combien de jours y a-t-il dans une année bissextile ?",
+        answers: ["365", "366", "364", "367"],
+        correct: 1,
+        explanation: "Une année bissextile a 366 jours (29 jours en février)."
+    },
+    {
+        question: "Quel est le plus petit pays du monde ?",
+        answers: ["Monaco", "Vatican", "Liechtenstein", "Saint-Marin"],
+        correct: 1,
+        explanation: "Le Vatican est le plus petit pays du monde."
+    },
+    {
+        question: "Qui a écrit 'Les Misérables' ?",
+        answers: ["Alexandre Dumas", "Victor Hugo", "Émile Zola", "Gustave Flaubert"],
+        correct: 1,
+        explanation: "Victor Hugo a écrit 'Les Misérables'."
+    }
+];
 
 class QuizState {
     constructor() {
@@ -79,6 +86,8 @@ class QuizState {
         this.questions = [];
         this.answeredQuestions = [];
         this.autoAdvanceTimer = null;
+        this.playerPseudo = '';
+        this.questionsLoaded = false;
     }
 
     reset() {
@@ -138,11 +147,131 @@ const elements = {
     abortModal: document.getElementById('abort-modal'),
     confirmAbort: document.getElementById('confirm-abort'),
     cancelAbort: document.getElementById('cancel-abort'),
-    progressIndicator: document.getElementById('progress-indicator')
+    progressIndicator: document.getElementById('progress-indicator'),
+    // Nouveaux éléments pour PHP
+    pseudoModal: document.getElementById('pseudo-modal'),
+    pseudoInput: document.getElementById('pseudo-input'),
+    confirmPseudo: document.getElementById('confirm-pseudo'),
+    cancelPseudo: document.getElementById('cancel-pseudo'),
+    leaderboard: document.getElementById('leaderboard'),
+    leaderboardList: document.getElementById('leaderboard-list'),
+    playerRank: document.getElementById('player-rank'),
+    loadingOverlay: document.getElementById('loading-overlay')
 };
 
+// =====================================================
+// API - Communication avec le serveur PHP
+// =====================================================
+
+/**
+ * Charge les questions depuis l'API PHP
+ */
+async function loadQuestionsFromAPI() {
+    try {
+        showLoading(true);
+        const response = await fetch(QUIZ_CONFIG.apiUrl + 'questions.php');
+        
+        if (!response.ok) {
+            throw new Error('Erreur serveur: ' + response.status);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.questions) {
+            QUIZ_CONFIG.questions = data.questions;
+            QUIZ_CONFIG.totalQuestions = data.totalQuestions;
+            quizState.questionsLoaded = true;
+            console.log('✅ Questions chargées depuis la BDD:', data.totalQuestions);
+            return true;
+        } else {
+            throw new Error(data.error || 'Erreur lors du chargement des questions');
+        }
+    } catch (error) {
+        console.warn('⚠️ API non disponible, utilisation des questions locales:', error.message);
+        useLocalQuestions();
+        return false;
+    } finally {
+        showLoading(false);
+    }
+}
+
+/**
+ * Utilise les questions locales en fallback
+ */
+function useLocalQuestions() {
+    QUIZ_CONFIG.questions = LOCAL_QUESTIONS;
+    QUIZ_CONFIG.totalQuestions = LOCAL_QUESTIONS.length;
+    quizState.questionsLoaded = true;
+}
+
+/**
+ * Envoie le score au serveur PHP
+ */
+async function saveScoreToAPI(pseudo, score, time) {
+    try {
+        const response = await fetch(QUIZ_CONFIG.apiUrl + 'scores.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                pseudo: pseudo,
+                score: score,
+                time: time,
+                totalQuestions: QUIZ_CONFIG.totalQuestions
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('✅ Score enregistré:', data);
+            return data;
+        } else {
+            throw new Error(data.error || 'Erreur lors de l\'enregistrement');
+        }
+    } catch (error) {
+        console.error('❌ Erreur API scores:', error);
+        return null;
+    }
+}
+
+/**
+ * Récupère le classement depuis le serveur PHP
+ */
+async function getLeaderboardFromAPI(limit = 10) {
+    try {
+        const response = await fetch(QUIZ_CONFIG.apiUrl + 'scores.php?limit=' + limit);
+        
+        if (!response.ok) {
+            throw new Error('Erreur serveur: ' + response.status);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            return data.scores;
+        } else {
+            throw new Error(data.error || 'Erreur lors de la récupération du classement');
+        }
+    } catch (error) {
+        console.error('❌ Erreur API leaderboard:', error);
+        return [];
+    }
+}
+
+// =====================================================
+// Gestion de l'interface utilisateur
+// =====================================================
+
+function showLoading(show) {
+    if (elements.loadingOverlay) {
+        elements.loadingOverlay.classList.toggle('hidden', !show);
+    }
+}
+
 function initializeEventListeners() {
-    elements.startQuiz.addEventListener('click', startQuiz);
+    elements.startQuiz.addEventListener('click', handleStartQuiz);
     elements.viewHistory.addEventListener('click', showHistoryPage);
     elements.backFromHistory.addEventListener('click', backToHome);
     elements.nextQuestion.addEventListener('click', nextQuestion);
@@ -151,12 +280,36 @@ function initializeEventListeners() {
     elements.abortQuiz.addEventListener('click', showAbortModal);
     elements.confirmAbort.addEventListener('click', abortQuiz);
     elements.cancelAbort.addEventListener('click', hideAbortModal);
+    
+    // Événements pour le modal pseudo
+    if (elements.confirmPseudo) {
+        elements.confirmPseudo.addEventListener('click', confirmPseudoAndSave);
+    }
+    if (elements.cancelPseudo) {
+        elements.cancelPseudo.addEventListener('click', hidePseudoModal);
+    }
+    if (elements.pseudoInput) {
+        elements.pseudoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmPseudoAndSave();
+            }
+        });
+    }
+    
     document.addEventListener('keydown', handleKeyboard);
     elements.abortModal.addEventListener('click', (e) => {
         if (e.target === elements.abortModal) {
             hideAbortModal();
         }
     });
+    
+    if (elements.pseudoModal) {
+        elements.pseudoModal.addEventListener('click', (e) => {
+            if (e.target === elements.pseudoModal) {
+                hidePseudoModal();
+            }
+        });
+    }
 }
 
 function handleKeyboard(event) {
@@ -183,6 +336,14 @@ function showPage(pageId) {
         page.classList.remove('active');
     });
     document.getElementById(pageId).classList.add('active');
+}
+
+async function handleStartQuiz() {
+    // Charger les questions si pas encore fait
+    if (!quizState.questionsLoaded) {
+        await loadQuestionsFromAPI();
+    }
+    startQuiz();
 }
 
 function startQuiz() {
@@ -269,7 +430,7 @@ function checkAnswer(selectedIndex) {
         explanation: question.explanation,
         questionNumber: quizState.currentQuestion + 1
     });
-    showAnswerFeedback(isCorrect, question);
+    showFeedback(isCorrect, isCorrect ? 'Correct !' : 'Incorrect');
     updateAnswerDisplay(selectedIndex, question.correct);
     elements.nextQuestion.disabled = false;
     updateProgressIndicator();
@@ -283,13 +444,13 @@ function checkAnswer(selectedIndex) {
     }, 3000);
 }
 
-function showAnswerFeedback(isCorrect, question) {
+function showFeedback(isCorrect, message) {
     const feedback = elements.feedback;
     const icon = elements.feedbackIcon;
-    const message = elements.feedbackMessage;
+    const feedbackMsg = elements.feedbackMessage;
     feedback.className = `feedback ${isCorrect ? 'success' : 'error'}`;
     icon.textContent = isCorrect ? '✓' : '✗';
-    message.textContent = isCorrect ? 'Correct !' : 'Incorrect';
+    feedbackMsg.textContent = message;
     feedback.classList.remove('hidden');
     setTimeout(() => {
         feedback.classList.add('hidden');
@@ -330,8 +491,131 @@ function finishQuiz() {
         quizState.autoAdvanceTimer = null;
     }
     const totalTime = Math.floor((Date.now() - quizState.startTime) / 1000);
+    
+    // Sauvegarder en local
     saveScore(quizState.correctAnswers, totalTime);
+    
+    // Afficher les résultats
     showResults(totalTime);
+    
+    // Afficher le modal pour le pseudo (pour le classement serveur)
+    showPseudoModal(totalTime);
+}
+
+// =====================================================
+// Gestion du pseudo et du classement
+// =====================================================
+
+function showPseudoModal(totalTime) {
+    if (elements.pseudoModal && elements.pseudoInput) {
+        elements.pseudoModal.classList.remove('hidden');
+        elements.pseudoInput.value = '';
+        elements.pseudoInput.focus();
+        elements.pseudoModal.dataset.totalTime = totalTime;
+    }
+}
+
+function hidePseudoModal() {
+    if (elements.pseudoModal) {
+        elements.pseudoModal.classList.add('hidden');
+    }
+}
+
+async function confirmPseudoAndSave() {
+    const pseudo = elements.pseudoInput.value.trim();
+    
+    if (pseudo.length < 2) {
+        elements.pseudoInput.classList.add('error');
+        elements.pseudoInput.placeholder = 'Minimum 2 caractères';
+        return;
+    }
+    
+    elements.pseudoInput.classList.remove('error');
+    quizState.playerPseudo = pseudo;
+    
+    const totalTime = parseInt(elements.pseudoModal.dataset.totalTime) || 0;
+    
+    // Envoyer au serveur
+    showLoading(true);
+    const result = await saveScoreToAPI(pseudo, quizState.correctAnswers, totalTime);
+    showLoading(false);
+    
+    hidePseudoModal();
+    
+    if (result && result.data) {
+        displayPlayerRank(result.data.rank);
+    }
+    
+    // Charger et afficher le classement
+    await displayLeaderboard();
+}
+
+function displayPlayerRank(rank) {
+    if (elements.playerRank) {
+        elements.playerRank.innerHTML = `
+            <div class="rank-announcement">
+                🏆 Félicitations <strong>${quizState.playerPseudo}</strong> ! 
+                Vous êtes classé <strong>#${rank}</strong> !
+            </div>
+        `;
+        elements.playerRank.classList.remove('hidden');
+    }
+}
+
+async function displayLeaderboard() {
+    if (!elements.leaderboardList) return;
+    
+    const scores = await getLeaderboardFromAPI(10);
+    
+    if (scores.length === 0) {
+        elements.leaderboardList.innerHTML = '<p class="no-scores">Aucun score enregistré sur le serveur.</p>';
+        if (elements.leaderboard) {
+            elements.leaderboard.classList.remove('hidden');
+        }
+        return;
+    }
+    
+    elements.leaderboardList.innerHTML = '';
+    
+    scores.forEach((score, index) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        
+        if (score.pseudo === quizState.playerPseudo) {
+            item.classList.add('current-player');
+        }
+        
+        let rankIcon = '';
+        if (index === 0) rankIcon = '🥇';
+        else if (index === 1) rankIcon = '🥈';
+        else if (index === 2) rankIcon = '🥉';
+        else rankIcon = `#${index + 1}`;
+        
+        const date = new Date(score.date);
+        const dateStr = date.toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        item.innerHTML = `
+            <div class="leaderboard-rank">${rankIcon}</div>
+            <div class="leaderboard-info">
+                <div class="leaderboard-pseudo">${score.pseudo}</div>
+                <div class="leaderboard-date">${dateStr}</div>
+            </div>
+            <div class="leaderboard-stats">
+                <div class="leaderboard-score">${score.score}/${score.totalQuestions}</div>
+                <div class="leaderboard-time">${score.time}s</div>
+            </div>
+        `;
+        
+        elements.leaderboardList.appendChild(item);
+    });
+    
+    if (elements.leaderboard) {
+        elements.leaderboard.classList.remove('hidden');
+    }
 }
 
 function showResults(totalTime) {
@@ -397,7 +681,7 @@ function handleTimeUp() {
             explanation: question.explanation,
             questionNumber: quizState.currentQuestion + 1
         });
-        showAnswerFeedback(false, question);
+        showFeedback(false, 'Temps écoulé !');
         elements.nextQuestion.disabled = false;
         updateProgressIndicator();
         if (quizState.autoAdvanceTimer) {
@@ -413,10 +697,15 @@ function handleTimeUp() {
 
 function restartQuiz() {
     quizState.reset();
+    quizState.playerPseudo = '';
+    if (elements.playerRank) elements.playerRank.classList.add('hidden');
+    if (elements.leaderboard) elements.leaderboard.classList.add('hidden');
     showPage('home-page');
 }
 
 function backToHome() {
+    if (elements.playerRank) elements.playerRank.classList.add('hidden');
+    if (elements.leaderboard) elements.leaderboard.classList.add('hidden');
     showPage('home-page');
 }
 
@@ -443,16 +732,83 @@ function updateProgressIndicator() {
     elements.progressIndicator.textContent = `Répondu: ${answered}/${QUIZ_CONFIG.totalQuestions}`;
 }
 
-function showHistoryPage() {
+async function showHistoryPage() {
     showPage('history-page');
     displayHomeHistory();
+    
+    // Charger le classement global depuis le serveur
+    showLoading(true);
+    const leaderboard = await getLeaderboardFromAPI(20);
+    showLoading(false);
+    
+    if (leaderboard.length > 0) {
+        displayGlobalLeaderboard(leaderboard);
+    }
+}
+
+function displayGlobalLeaderboard(scores) {
+    let globalSection = document.getElementById('global-leaderboard-section');
+    
+    if (!globalSection) {
+        globalSection = document.createElement('div');
+        globalSection.id = 'global-leaderboard-section';
+        globalSection.className = 'global-leaderboard-section';
+        globalSection.innerHTML = '<h3>🌍 Classement Global</h3><div id="global-leaderboard-list" class="leaderboard-list"></div>';
+        elements.homeHistoryList.parentNode.insertBefore(globalSection, elements.homeHistoryList);
+    }
+    
+    const listContainer = document.getElementById('global-leaderboard-list');
+    listContainer.innerHTML = '';
+    
+    scores.forEach((score, index) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        
+        let rankIcon = '';
+        if (index === 0) rankIcon = '🥇';
+        else if (index === 1) rankIcon = '🥈';
+        else if (index === 2) rankIcon = '🥉';
+        else rankIcon = `#${index + 1}`;
+        
+        const date = new Date(score.date);
+        const dateStr = date.toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit'
+        });
+        
+        item.innerHTML = `
+            <div class="leaderboard-rank">${rankIcon}</div>
+            <div class="leaderboard-info">
+                <div class="leaderboard-pseudo">${score.pseudo}</div>
+                <div class="leaderboard-date">${dateStr}</div>
+            </div>
+            <div class="leaderboard-stats">
+                <div class="leaderboard-score">${score.score}/${score.totalQuestions}</div>
+                <div class="leaderboard-time">${score.time}s</div>
+            </div>
+        `;
+        
+        listContainer.appendChild(item);
+    });
 }
 
 function displayHomeHistory() {
     const scores = loadScores();
     elements.homeHistoryList.innerHTML = '';
+    
+    const title = document.createElement('h3');
+    title.textContent = '📱 Votre Historique Local';
+    title.style.color = 'white';
+    title.style.marginBottom = '1rem';
+    elements.homeHistoryList.appendChild(title);
+    
     if (scores.length === 0) {
-        elements.homeHistoryList.innerHTML = '<p style="text-align: center; color: white; padding: 2rem;">Aucun score enregistré.</p>';
+        const noScores = document.createElement('p');
+        noScores.style.textAlign = 'center';
+        noScores.style.color = 'white';
+        noScores.style.padding = '2rem';
+        noScores.textContent = 'Aucun score local enregistré.';
+        elements.homeHistoryList.appendChild(noScores);
         return;
     }
     const recentScores = scores.slice(0, 10);
@@ -549,10 +905,13 @@ function displayScoreHistory() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initializeEventListeners();
     showPage('home-page');
     addLoadingEffects();
+    
+    // Précharger les questions au démarrage
+    await loadQuestionsFromAPI();
 });
 
 function addLoadingEffects() {

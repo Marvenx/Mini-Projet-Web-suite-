@@ -146,6 +146,16 @@
                     </div>
                 </div>
                 
+                <!-- Classement global (PHP) -->
+                <div id="player-rank" class="player-rank-container hidden">
+                </div>
+                
+                <div id="leaderboard" class="leaderboard-container hidden">
+                    <h3>🏆 Classement Global</h3>
+                    <div id="leaderboard-list" class="leaderboard-list">
+                    </div>
+                </div>
+                
                 <div class="results-actions">
                     <button id="restart-quiz" class="btn btn-primary">
                         Recommencer
@@ -174,6 +184,25 @@
                 <button id="cancel-abort" class="btn btn-secondary">Annuler</button>
             </div>
         </div>
+    </div>
+
+    <!-- Modal pour entrer le pseudo -->
+    <div id="pseudo-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>🎮 Enregistrer votre score</h3>
+            <p>Entrez votre pseudo pour apparaître dans le classement :</p>
+            <input type="text" id="pseudo-input" class="pseudo-input" placeholder="Votre pseudo" maxlength="50" autocomplete="off">
+            <div class="modal-actions">
+                <button id="confirm-pseudo" class="btn btn-primary">Enregistrer</button>
+                <button id="cancel-pseudo" class="btn btn-secondary">Passer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de chargement -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Chargement...</p>
     </div>
 
     <script src="script.js"></script>
